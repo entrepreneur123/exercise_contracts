@@ -10,7 +10,7 @@ contract ProofOfExistence2 {
   function storeProof(bytes32 proof) 
     public 
   {
-  
+  proofs.push(proof);
   }
 
   // calculate and store the proof for a document
@@ -18,7 +18,8 @@ contract ProofOfExistence2 {
   function notarize(string calldata document) 
     external 
   {
-
+    byte32 proof = proofFor(document);
+    storeProof(proof);
   }
 
   // helper function to get a document's sha256
@@ -28,7 +29,7 @@ contract ProofOfExistence2 {
     public 
     returns (bytes32) 
   {
-    
+    return sha256(abi.encodePacked(document));
   }
 
   // check if a document has been notarized
@@ -38,7 +39,8 @@ contract ProofOfExistence2 {
     view 
     returns (bool) 
   {
-    
+    bytes32 proof = proofFor(document);
+    return hasProof(proof);
   }
 
   // returns true if proof is stored
@@ -48,5 +50,11 @@ contract ProofOfExistence2 {
     view 
     returns (bool) 
   {
+    for (uint256 i = 0; i< proofs.length; i++) {
+      if (proofs[i] == proof) {
+        return true;
+      }
+    }
+    return false;
    
 }
